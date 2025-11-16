@@ -65,61 +65,61 @@
 </head>
 <body>
     <div id="info-overlay"><div id="info-content"></div></div>
-    <div id="instructions">📷 Arahkan kamera ke marker untuk melihat objek sejarah dalam AR</div>
+    <div id="instructions">📷 Arahkan kamera ke barcode marker (0-9)</div>
     <div id="touch-hint">👆 Geser kiri/kanan untuk putar model 360°</div>
     <div class="loading" id="loading">Memuat AR...</div>
 
-    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960;" vr-mode-ui="enabled: false" renderer="logarithmicDepthBuffer: true; precision: medium; antialias: true;" loading-screen="enabled: false" gesture-detector>
+    <a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;" vr-mode-ui="enabled: false" renderer="logarithmicDepthBuffer: true; precision: medium; antialias: true;" loading-screen="enabled: false" gesture-detector>
         
         <a-entity camera></a-entity>
 
-        <!-- 1. Borobudur (Hiro) -->
-        <a-marker preset="hiro" id="marker-borobudur">
+        <!-- Barcode 0: Borobudur -->
+        <a-marker type="barcode" value="0" id="marker-borobudur">
             <a-entity class="ar-model" data-object="borobudur" gltf-model="url(Borobudur.glb)" scale="1 1 1" position="0 0.5 0" rotation="-90 0 0"></a-entity>
         </a-marker>
 
-        <!-- 2. Prasasti Ciaruteun -->
-        <a-marker type="pattern" url="markers/prasasti-ciaruteun.patt" id="marker-prasasti">
+        <!-- Barcode 1: Prasasti Ciaruteun -->
+        <a-marker type="barcode" value="1" id="marker-prasasti">
             <a-entity class="ar-model" data-object="prasasti" gltf-model="url(models/prasasti-ciaruteun.glb)" scale="0.5 0.5 0.5" position="0 0.3 0" rotation="-90 0 0"></a-entity>
         </a-marker>
 
-        <!-- 3. Dolmen -->
-        <a-marker type="pattern" url="markers/dolmen.patt" id="marker-dolmen">
+        <!-- Barcode 2: Dolmen -->
+        <a-marker type="barcode" value="2" id="marker-dolmen">
             <a-entity class="ar-model" data-object="dolmen" gltf-model="url(models/dolmen.glb)" scale="0.8 0.8 0.8" position="0 0.4 0" rotation="-90 0 0"></a-entity>
         </a-marker>
 
-        <!-- 4. Arca Buddha -->
-        <a-marker type="pattern" url="markers/arca-buddha.patt" id="marker-arca">
+        <!-- Barcode 3: Arca Buddha -->
+        <a-marker type="barcode" value="3" id="marker-arca">
             <a-entity class="ar-model" data-object="arca" gltf-model="url(models/arca-buddha.glb)" scale="0.6 0.6 0.6" position="0 0.3 0" rotation="-90 0 0"></a-entity>
         </a-marker>
 
-        <!-- 5. Kjokkenmoddinger -->
-        <a-marker type="pattern" url="markers/kjokkenmoddinger.patt" id="marker-kjokken">
+        <!-- Barcode 4: Kjokkenmoddinger -->
+        <a-marker type="barcode" value="4" id="marker-kjokken">
             <a-entity class="ar-model" data-object="kjokken" gltf-model="url(models/kjokkenmoddinger.glb)" scale="0.4 0.4 0.4" position="0 0.2 0" rotation="-90 0 0"></a-entity>
         </a-marker>
 
-        <!-- 6. Menhir -->
-        <a-marker type="pattern" url="markers/menhir.patt" id="marker-menhir">
+        <!-- Barcode 5: Menhir -->
+        <a-marker type="barcode" value="5" id="marker-menhir">
             <a-entity class="ar-model" data-object="menhir" gltf-model="url(models/menhir.glb)" scale="0.7 0.7 0.7" position="0 0.4 0" rotation="-90 0 0"></a-entity>
         </a-marker>
 
-        <!-- 7. Prambanan -->
-        <a-marker type="pattern" url="markers/prambanan.patt" id="marker-prambanan">
+        <!-- Barcode 6: Prambanan -->
+        <a-marker type="barcode" value="6" id="marker-prambanan">
             <a-entity class="ar-model" data-object="prambanan" gltf-model="url(models/prambanan.glb)" scale="1 1 1" position="0 0.5 0" rotation="-90 0 0"></a-entity>
         </a-marker>
 
-        <!-- 8. Brahma -->
-        <a-marker type="pattern" url="markers/brahma.patt" id="marker-brahma">
+        <!-- Barcode 7: Brahma -->
+        <a-marker type="barcode" value="7" id="marker-brahma">
             <a-entity class="ar-model" data-object="brahma" gltf-model="url(models/brahma.glb)" scale="0.5 0.5 0.5" position="0 0.3 0" rotation="-90 0 0"></a-entity>
         </a-marker>
 
-        <!-- 9. Meganthropus -->
-        <a-marker type="pattern" url="markers/meganthropus.patt" id="marker-meganthropus">
+        <!-- Barcode 8: Meganthropus -->
+        <a-marker type="barcode" value="8" id="marker-meganthropus">
             <a-entity class="ar-model" data-object="meganthropus" gltf-model="url(models/meganthropus.glb)" scale="0.4 0.4 0.4" position="0 0.3 0" rotation="-90 0 0"></a-entity>
         </a-marker>
 
-        <!-- 10. Homo Erectus -->
-        <a-marker type="pattern" url="markers/homo-erectus.patt" id="marker-homo">
+        <!-- Barcode 9: Homo Erectus -->
+        <a-marker type="barcode" value="9" id="marker-homo">
             <a-entity class="ar-model" data-object="homo" gltf-model="url(models/homo-erectus.glb)" scale="0.4 0.4 0.4" position="0 0.3 0" rotation="-90 0 0"></a-entity>
         </a-marker>
     </a-scene>
@@ -138,43 +138,43 @@
 
         const objInfo = {
             borobudur: {
-                title: "🕌 Candi Borobudur",
+                title: "🕌 Candi Borobudur (Barcode 0)",
                 html: '<p><strong>Candi Borobudur</strong> dibangun pada masa Dinasti Syailendra sekitar tahun <strong>780–830 M</strong> oleh Raja Samaratungga dengan arsitek Gunadharma.</p><p>Nama Borobudur dari kata <em>Vihara Buddha Uhr</em> (biara Buddha di atas bukit). Dibangun setinggi 34,5 meter dengan 2 juta balok batu andesit tanpa semen, menggunakan sistem <strong>interlocking</strong>.</p><h2>Struktur</h2><ul><li><strong>Kamadhatu</strong> - dunia nafsu (160 relief karma)</li><li><strong>Rupadhatu</strong> - dunia bentuk (1.300 relief, 432 arca Buddha)</li><li><strong>Arupadhatu</strong> - dunia tanpa bentuk (72 stupa berlubang)</li></ul><p>Bentuk dari atas menyerupai <strong>mandala</strong>, melambangkan perjalanan spiritual menuju nirwana.</p>'
             },
             prasasti: {
-                title: "📜 Prasasti Ciaruteun",
+                title: "📜 Prasasti Ciaruteun (Barcode 1)",
                 html: '<p>Prasasti peninggalan <strong>Kerajaan Tarumanegara</strong> ditemukan di Cibungbulang, Bogor.</p><h2>Struktur</h2><ul><li><strong>Inskripsi A:</strong> 4 baris aksara Pallawa bahasa Sanskerta</li><li><strong>Inskripsi B:</strong> 1 baris, belum terbaca jelas</li></ul><h2>Makna</h2><p>Terdapat gambar <strong>sepasang telapak kaki Raja Purnawarman</strong> yang disamakan dengan kaki Dewa Wisnu sebagai penghormatan.</p>'
             },
             dolmen: {
-                title: "🪨 Dolmen",
+                title: "🪨 Dolmen (Barcode 2)",
                 html: '<p>Dari bahasa Breton: "dol" (meja) + "men" (batu). Meja batu besar dari batu tegak penyangga dan batu datar di atasnya.</p><h2>Fungsi</h2><ul><li>Tempat sesaji untuk arwah nenek moyang</li><li>Penutup kubur batu</li></ul><h2>Lokasi</h2><p>Bondowoso, Puger (Jawa Timur), Paseman (Sumsel), Sumba (NTT)</p><p>Menunjukkan <strong>stratifikasi sosial</strong> - hanya tokoh penting dikuburkan dengan Dolmen.</p>'
             },
             arca: {
-                title: "🙏 Arca Buddha (Dharmacakra Mudra)",
+                title: "🙏 Arca Buddha (Barcode 3)",
                 html: '<h2>Ciri Fisik</h2><ul><li><strong>Ushnisha</strong> - ubun menonjol, pencapaian spiritual</li><li><strong>Urna</strong> - bulu di alis, kebijaksanaan</li><li><strong>Telinga panjang</strong> - kemajuan spiritual</li><li><strong>Mata setengah terpejam</strong> - ketenangan</li></ul><h2>Dharmacakra Mudra</h2><p><strong>Dharma</strong> (kebenaran) + <strong>Chakra</strong> (roda) = "Pemutaran Roda Dharma", ajaran pertama Buddha setelah pencerahan.</p><p>Telunjuk menyentuh ibu jari membentuk lingkaran (roda dharma). 3 jari tegak = <strong>Tri Ratna</strong>: Buddha, Dharma, Sangha.</p>'
             },
             kjokken: {
-                title: "🐚 Kjokkenmoddinger",
+                title: "🐚 Kjokkenmoddinger (Barcode 4)",
                 html: '<p>Dari Denmark: "kjokken" (dapur) + "modding" (sampah). Tumpukan kulit kerang manusia purba tepi pantai masa Mesolitikum.</p><h2>Ciri-ciri</h2><ul><li>Tumpukan kulit kerang/siput</li><li>Alat batu sederhana (kapak genggam)</li><li>Pola berburu dan meramu</li><li>Di pesisir pantai/muara sungai</li></ul><h2>Lokasi di Indonesia</h2><p>Sumatra Utara (Lhok Seumawe, Medan), Sumatra Timur (Langsa, Binjai)</p><p>Bukti kehidupan <strong>semi-nomaden</strong> bergantung hasil laut.</p>'
             },
             menhir: {
-                title: "🗿 Menhir",
+                title: "🗿 Menhir (Barcode 5)",
                 html: '<p>Batu tegak megalitik sebagai penghormatan leluhur dan simbol arwah dalam upacara keagamaan prasejarah.</p><h2>Fungsi</h2><ul><li>Batu peringatan dan tanda kubur</li><li>Medium pemujaan roh nenek moyang</li><li>Simbol hubungan manusia-dunia spiritual</li></ul><h2>Transformasi</h2><p>Pada Islamisasi Maluku (Kerajaan Hitu), batu tegak diadaptasi jadi <strong>nisan makam Islam</strong>.</p><p>Menunjukkan <strong>akulturasi</strong> Islam dengan tradisi megalitik - penghormatan leluhur tetap terjaga.</p>'
             },
             prambanan: {
-                title: "🛕 Candi Prambanan",
+                title: "🛕 Candi Prambanan (Barcode 6)",
                 html: '<p>Dibangun era <strong>Kerajaan Mataram Kuno</strong> (abad 8-10). Terdiri <strong>240 struktur candi</strong>.</p><h2>Sejarah</h2><p>Dimulai oleh <strong>Rakai Pikatan</strong>, diresmikan <strong>778 Saka (856 M)</strong> oleh Rakai Kayuwangi.</p><h2>Arsitektur</h2><p>Berdasarkan <strong>Prasasti Siwagraha</strong>, didedikasikan untuk <strong>Trimurti</strong> (Wisnu, Brahma, Siwa). Mengikuti pola <strong>mandala</strong> dan bentuk <strong>Gunung Mahameru</strong>.</p><p>Struktur mencerminkan kosmologi Hindu tiga loka (ranah alam semesta).</p>'
             },
             brahma: {
-                title: "🔱 Dewa Brahma",
+                title: "🔱 Dewa Brahma (Barcode 7)",
                 html: '<p>Dewa pencipta alam semesta dalam <strong>Trimurti</strong> (Brahma pencipta, Wisnu pemelihara, Siwa pelebur).</p><h2>Ciri Fisik</h2><ul><li><strong>4 wajah</strong> ke 4 penjuru - penguasaan 4 Veda</li><li><strong>4 tangan:</strong> teratai (penciptaan), mala (waktu), kitab (pengetahuan), mudra (berkah)</li></ul><h2>Filosofi</h2><p><strong>Nirguna Brahman:</strong> Tuhan tak berwujud<br><strong>Saguna Brahman:</strong> Tuhan berwujud</p><p>Brahma = manifestasi Saguna Brahman dalam fungsi penciptaan.</p>'
             },
             meganthropus: {
-                title: "🦴 Meganthropus Paleojavanicus",
+                title: "🦴 Meganthropus Paleojavanicus (Barcode 8)",
                 html: '<p>Manusia purba tertua di Indonesia, fosil ditemukan di <strong>Sangiran</strong> oleh <strong>von Koenigswald (1937-1941)</strong>. Hidup <strong>1-2 juta tahun lalu</strong>.</p><h2>Ciri Fisik</h2><ul><li>Tinggi ±2,5 m, postur besar kokoh</li><li>Otak ±900 cc</li><li>Dahi tebal, tulang pipi kuat</li><li>Gigi geraham besar kuat</li><li>Berjalan membungkuk</li><li>Tangan lebih panjang dari kaki</li></ul><h2>Kehidupan</h2><p><strong>Nomaden</strong>, herbivora (umbi, akar, biji). Ditemukan alat batu sederhana (kapak genggam).</p>'
             },
             homo: {
-                title: "🚶 Homo Erectus",
+                title: "🚶 Homo Erectus (Barcode 9)",
                 html: '<p>Fosil pertama ditemukan <strong>Eugene Dubois (1891)</strong> di Trinil, Jawa Timur. Hidup <strong>1,5 juta - 300 ribu tahun lalu</strong>.</p><h2>Ciri Fisik</h2><ul><li>Tinggi 160-170 cm, tubuh tegap</li><li>Otak 750-1.200 cc</li><li>Dahi miring, alis tebal</li><li>Berjalan tegak sepenuhnya</li></ul><h2>Kemajuan</h2><ul><li>Membuat <strong>alat batu</strong> (kapak genggam)</li><li><strong>Menguasai api</strong> pertama kali</li><li>Pakai <strong>kulit binatang</strong> sebagai pakaian</li><li>Hidup <strong>berkelompok</strong></li></ul><p>Menunjukkan kesadaran sosial dan budaya awal.</p>'
             }
         };
@@ -252,7 +252,7 @@
 
         scene.addEventListener('touchend', () => { isDragging = false; });
 
-        setTimeout(() => { loading.textContent = 'Cari marker dengan kamera untuk memulai...'; }, 2000);
+        setTimeout(() => { loading.textContent = 'Cari barcode marker (0-9) dengan kamera untuk memulai...'; }, 2000);
     </script>
 </body>
 </html>
