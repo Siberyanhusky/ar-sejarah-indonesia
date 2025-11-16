@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Sejarah Indonesia</title>
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        #info-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            pointer-events: none;
+        }
+
+        #info-overlay.show {
+            display: flex;
+            pointer-events: auto;
+        }
+
+        #info-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 800px;
+            max-height: 70vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        #info-content h1 {
+            color: #8B4513;
+            margin-bottom: 20px;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        #info-content h2 {
+            color: #A0522D;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        #info-content p, #info-content li {
+            color: #333;
+            line-height: 1.8;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        #info-content ul {
+            margin-left: 20px;
+        }
+
+        #close-info {
+            display: block;
+            margin: 25px auto 0;
+            padding: 12px 40px;
+            background: #8B4513;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        #close-info:hover {
+            background: #A0522D;
+        }
+
+        #instructions {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(139, 69, 19, 0.9);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 30px;
+            z-index: 998;
+            text-align: center;
+            font-size: 14px;
+            max-width: 90%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        #touch-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(139, 69, 19, 0.9);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            z-index: 998;
+            text-align: center;
+            font-size: 13px;
+            max-width: 90%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            #info-content {
+                padding: 20px;
+            }
+            
+            #info-content h1 {
+                font-size: 22px;
+            }
+            
+            #info-content h2 {
+                font-size: 18px;
+            }
+            
+            #info-content p, #info-content li {
+                font-size: 14px;
+            }
+
+            #touch-hint {
+                font-size: 12px;
+                padding: 10px 20px;
+            }
+        }
+
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 18px;
+            z-index: 997;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px 40px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Info Overlay -->
+    <div id="info-overlay">
+        <div id="info-content"></div>
+    </div>
+
+    <!-- Instructions -->
+    <div id="instructions">
+        📷 Arahkan kamera ke marker untuk melihat objek sejarah dalam AR
+    </div>
+
+    <!-- Touch Hint -->
+    <div id="touch-hint">
+        👆 Geser kiri/kanan untuk putar model 360°
+    </div>
+
+    <div class="loading" id="loading">Memuat AR...</div>
+
+    <!-- A-Frame AR Scene -->
+    <a-scene
+        embedded
+        arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3; sourceWidth:1280; sourceHeight:960; displayWidth: 1280; displayHeight: 960;"
+        vr-mode-ui="enabled: false"
+        renderer="logarithmicDepthBuffer: true; precision: medium; antialias: true;"
+        loading-screen="enabled: false"
+        gesture-detector>
+        
+        <!-- Camera -->
+        <a-entity camera></a-entity>
+
+        <!-- Marker 1: Borobudur (Hiro Preset) -->
+        <a-marker preset="hiro" id="marker-borobudur">
+            <a-entity
+                class="ar-model"
+                data-object="borobudur"
+                gltf-model="url(Borobudur.glb)"
+                scale="1 1 1"
+                position="0 0.5 0"
+                rotation="-90 0 0">
+            </a-entity>
+        </a-marker>
+
+        <!-- Marker 2: Prasasti Ciaruteun -->
+        <a-marker type="pattern" url="markers/prasasti-ciaruteun.patt" id="marker-prasasti">
+            <a-entity
+                class="ar-model"
+                data-object="prasasti"
+                gltf-model="url(models/prasasti-ciaruteun.glb)"
+                scale="0.5 0.5 0.5"
+                position="0 0.3 0"
+                rotation="-90 0 0">
+            </a-entity>
+        </a-marker>
+
+        <!-- Marker 3: Dolmen -->
+        <a-marker type="pattern" url="markers/dolmen.patt" id="marker-dolmen">
+            <a-entity
+                class="ar-model"
+                data-object="dolmen"
+                gltf-model="url(models/dolmen.glb)"
+                scale="0.8 0.8 0.8"
+                position="0 0.4 0"
+                rotation="-90 0 0">
+            </a-entity>
+        </a-marker>
+
+        <!-- Marker 4: Arca Buddha -->
+        <a-marker type="pattern" url="markers/arca-buddha.patt" id="marker-arca">
+            <a-entity
+                class="ar-model"
+                data-object="arca"
+                gltf-model="url(models/arca-buddha.glb)"
+                scale="0.6 0.6 0.6"
+                position="0 0.3 0"
+                rotation="-90 0 0">
+            </a-entity>
+        </a-marker>
+
+        <!-- Marker 5: Kjokkenmoddinger -->
+        <a-marker type="pattern" url="markers/kjokkenmoddinger.patt" id="marker-kjokken">
+            <a-entity
+                class="ar-model"
+                data-object="kjokken"
+                gltf-model="url(models/kjokkenmoddinger.glb)"
+                scale="0.4 0.4 0.4"
+                position="0 0.2 0"
+                rotation="-90 0 0">
+            </a-entity>
+        </a-marker>
+
+        <!-- Marker 6: Menhir -->
+        <a-marker type="pattern" url="markers/menhir.patt" id="marker-menhir">
+            <a-entity
+                class="ar-model"
+                data-object="menhir"
+                gltf-model="url(models/menhir.glb)"
+                scale="0.7 0.7 0.7"
+                position="0 0.4 0"
+                rotation="-90 0 0">
+            </a-entity>
+        </a-marker>
+
+        <!-- Marker 7: Prambanan -->
+        <a-marker type="pattern" url="markers/prambanan.patt" id="marker-prambanan">
+            <a-entity
+                class="ar-model"
+                data-object="prambanan"
+                gltf-model="url(models/prambanan.glb)"
+                scale="1 1 1"
+                position="0 0.5 0"
+                rotation="-90 0 0">
+            </a-entity>
+        </a-marker>
+
+        <!-- Marker 8: Brahma -->
+        <a-marker type="pattern" url="markers/brahma.patt" id="marker-brahma">
+            <a-entity
+                class="ar-model"
+                data-object="brahma"
+                gltf-model="url(models/brahma.glb)"
+                scale="0.5 0.5 0.5"
+                position="0 0.3 0"
+                rotation="-90 0 0">
+            </a-entity>
+        </a-marker>
+
+        <!-- Marker 9: Meganthropus -->
+        <a-marker type="pattern" url="markers/meganthropus.patt" id="marker-meganthropus">
+            <a-entity
+                class="ar-model"
+                data-object="meganthropus"
+                gltf-model="url(models/meganthropus.glb)"
+                scale="0.4 0.4 0.4"
+                position="0 0.3 0"
+                rotation="-90 0 0">
+            </a-entity>
+        </a-marker>
+
+        <!-- Marker 10: Homo Erectus -->
+        <a-marker type="pattern" url="markers/homo-erectus.patt" id="marker-homo">
+            <a-entity
+                class="ar-model"
+                data-object="homo"
+                gltf-model="url(models/homo-erectus.glb)"
+                scale="0.4 0.4 0.4"
+                position="0 0.3 0"
+                rotation="-90 0 0">
+            </a-entity>
+        </a-marker>
+    </a-scene>
+
+    <script>
+        const scene = document.querySelector('a-scene');
+        const loading = document.querySelector('#loading');
+        const infoOverlay = document.getElementById('info-overlay');
+        const infoContent = document.getElementById('info-content');
+        
+        // Track current rotation and active model
+        let currentRotation = { x: -90, y: 0, z: 0 };
+        let activeModel = null;
+        let isDragging = false;
+        let previousMouseX = 0;
+        let markerVisible = false;
+
+        // Database informasi objek
+        const objectInfo = {
+            borobudur: {
+                title: "🕌 Candi Borobudur",
+                content: `
+                    <p><strong>Candi Borobudur</strong> merupakan salah satu peninggalan kebudayaan Buddha terbesar di dunia yang terletak di Magelang, Jawa Tengah, Indonesia. Candi ini dibangun pada masa Dinasti Syailendra, sekitar tahun <strong>780–830 Masehi</strong>, ketika ajaran Buddha Mahayana berkembang pesat di Nusantara. Raja yang berperan besar dalam pembangunan candi ini diperkirakan adalah <strong>Raja Samaratungga</strong>, dengan arsiteknya bernama <strong>Gunadharma</strong>.</p>
+
+                    <p>Nama Borobudur berasal dari kata <em>Vihara Buddha Uhr</em> yang berarti "biara Buddha di atas bukit". Candi ini dibangun di atas bukit setinggi 34,5 meter dengan batu andesit sebanyak sekitar 2 juta balok, yang disusun tanpa menggunakan semen, melainkan sistem <strong>interlocking</strong> (saling mengunci).</p>
+
+                    <h2>Latar Belakang Pembangunan</h2>
+                    <p>Candi Borobudur mencerminkan perpaduan antara keagamaan, filsafat, dan seni arsitektur Jawa kuno. Dinasti Syailendra membangun candi ini sebagai tempat pemujaan dan ziarah bagi umat Buddha Mahayana, dengan tujuan membantu umat mencapai pencerahan (nirwana).</p>
+
+                    <h2>Struktur dan Arsitektur</h2>
+                    <p>Candi Borobudur memiliki struktur berbentuk <strong>punden berundak</strong> yang merepresentasikan konsep kosmologi Buddhis. Candi terdiri dari tiga tingkatan utama:</p>
+                    <ul>
+                        <li><strong>Kamadhatu</strong> – bagian dasar, melambangkan dunia nafsu dan keinginan</li>
+                        <li><strong>Rupadhatu</strong> – empat tingkat di tengah, melambangkan dunia bentuk</li>
+                        <li><strong>Arupadhatu</strong> – tiga teras melingkar di puncak, melambangkan dunia tanpa bentuk</li>
+                    </ul>
+                `
+            },
+            prasasti: {
+                title: "📜 Prasasti Ciaruteun",
+                content: `
+                    <p>Prasasti ini merupakan peninggalan <strong>Kerajaan Tarumanegara</strong> dan ditemukan di Kampung Muara, Desa Ciaruteun Hilir, Cibungbulang, Bogor.</p>
+
+                    <h2>Struktur Prasasti</h2>
+                    <p>Prasasti terdiri atas dua bagian tulisan:</p>
+                    <ul>
+                        <li><strong>Inskripsi A:</strong> berisi empat baris tulisan beraksara Pallawa dan menggunakan bahasa Sanskerta</li>
+                        <li><strong>Inskripsi B:</strong> berisi satu baris tulisan, tetapi tulisannya belum dapat dibaca dengan jelas</li>
+                    </ul>
+
+                    <h2>Makna Simbolis</h2>
+                    <p>Pada prasasti ini terdapat gambar sepasang telapak kaki yang menjadi bagian penting dari makna simbolis prasasti. Telapak kaki tersebut adalah kaki <strong>Raja Purnawarman</strong>, yang disebutkan disamakan dengan kaki Dewa Wisnu sebagai bentuk penghormatan.</p>
+                `
+            },
+            dolmen: {
+                title: "🪨 Dolmen",
+                content: `
+                    <p>Dolmen berasal dari bahasa Breton (Eropa Barat), yaitu dari kata "dol" yang berarti <strong>meja</strong> dan "men" yang berarti <strong>batu</strong>.</p>
+
+                    <h2>Struktur dan Fungsi</h2>
+                    <p>Dolmen merupakan meja batu besar yang disusun dari beberapa batu tegak sebagai penyangga dan satu batu datar besar di atasnya. Dolmen berfungsi sebagai:</p>
+                    <ul>
+                        <li>Tempat meletakkan sesaji untuk arwah nenek moyang</li>
+                        <li>Penutup kubur batu (bagian atas peti kubur)</li>
+                    </ul>
+
+                    <h2>Lokasi Penemuan</h2>
+                    <p>Dolmen ditemukan di daerah Bondowoso (Jawa Timur), Puger (Jawa Timur), Paseman (Sumatra Selatan), dan Sumba (Nusa Tenggara Timur). Biasanya ditemukan di daerah pegunungan atau dataran tinggi.</p>
+
+                    <h2>Makna Sosial</h2>
+                    <p>Keberadaan Dolmen menunjukkan adanya <strong>stratifikasi sosial</strong>, karena hanya tokoh penting atau pemimpin yang dikuburkan dengan Dolmen.</p>
+                `
+            },
+            arca: {
+                title: "🙏 Arca Buddha (Dharmacakra Mudra)",
+                content: `
+                    <h2>Makna Umum Arca Buddha</h2>
+                    <p>Arca di Candi Borobudur menggambarkan keluhuran, kehormatan, dan keagungan Sang Buddha dengan ciri khas:</p>
+                    <ul>
+                        <li><strong>Ushnisha</strong> (ubun-ubun menonjol) - melambangkan pencapaian spiritual tertinggi</li>
+                        <li><strong>Urna</strong> (bulu halus di antara alis) - melambangkan kebijaksanaan spiritual</li>
+                        <li><strong>Daun telinga panjang</strong> - melambangkan kemajuan spiritual dan sifat welas asih</li>
+                        <li><strong>Mata setengah terpejam</strong> - melambangkan ketenangan dan konsentrasi</li>
+                    </ul>
+
+                    <h2>Makna Dharmacakra Mudra</h2>
+                    <p>Istilah Dharmachakra berasal dari dua kata Sanskerta: <strong>Dharma</strong> (ajaran kebenaran) dan <strong>Chakra</strong> (roda). Secara harfiah berarti "Pemutaran Roda Dharma", yang melambangkan ajaran pertama Sang Buddha setelah mencapai pencerahan.</p>
+
+                    <h2>Makna Posisi Tangan</h2>
+                    <p>Telunjuk kanan menyentuh ibu jari kanan, dan telunjuk kiri menyentuh ibu jari kiri, membentuk dua lingkaran yang melambangkan roda dharma. Tiga jari lainnya tegak lurus, mewakili <strong>Tri Ratna</strong>: Buddha, Dharma, dan Sangha.</p>
+                `
+            },
+            kjokken: {
+                title: "🐚 Kjokkenmoddinger",
+                content: `
+                    <p>Kjokkenmoddinger berasal dari bahasa Denmark: "kjokken" (dapur) dan "modding" (sampah). Merujuk pada <strong>tumpukan kulit kerang</strong> yang ditinggalkan manusia purba di tepi pantai pada masa Mesolitikum.</p>
+
+                    <h2>Ciri-ciri Kjokkenmoddinger</h2>
+                    <ul>
+                        <li>Terdiri atas tumpukan kulit kerang atau siput</li>
+                        <li>Ditemukan alat batu sederhana, khususnya kapak genggam</li>
+                        <li>Menunjukkan pola kehidupan berburu dan mengumpulkan makanan</li>
+                        <li>Berlokasi di daerah pesisir pantai atau muara sungai</li>
+                    </ul>
+
+                    <h2>Lokasi Penemuan di Indonesia</h2>
+                    <p>Temuan kjokkenmoddinger ada di beberapa daerah:</p>
+                    <ul>
+                        <li>Sumatera Utara, di sekitar pantai timur (Lhok Seumawe dan Medan)</li>
+                        <li>Sumatera Timur, di daerah Langsa dan Binjai</li>
+                    </ul>
+
+                    <h2>Makna Arkeologis</h2>
+                    <p>Temuan ini menjadi bukti bahwa kehidupan manusia purba sudah bersifat <strong>semi-nomaden</strong>, bergantung pada hasil laut dan buruan hewan di sekitar pantai.</p>
+                `
+            },
+            menhir: {
+                title: "🗿 Menhir",
+                content: `
+                    <p>Menhir merupakan peninggalan tradisi megalitik berupa <strong>batu tegak</strong> yang berfungsi sebagai tanda penghormatan terhadap leluhur atau simbol kehadiran arwah dalam upacara keagamaan prasejarah.</p>
+
+                    <h2>Fungsi Menhir</h2>
+                    <ul>
+                        <li>Batu peringatan dan tanda kubur</li>
+                        <li>Medium religius untuk pemujaan roh nenek moyang</li>
+                        <li>Simbol hubungan antara manusia dan dunia spiritual</li>
+                    </ul>
+
+                    <h2>Transformasi Tradisi Menhir</h2>
+                    <p>Seiring perkembangan zaman, tradisi menhir mengalami transformasi. Pada masa Islamisasi di Maluku (Kerajaan Hitu), batu tegak yang sebelumnya digunakan untuk pemujaan arwah leluhur diadaptasi menjadi <strong>nisan pada makam-makam Islam</strong>.</p>
+
+                    <h2>Makna Budaya</h2>
+                    <p>Penggunaan nisan menhir menunjukkan <strong>akulturasi budaya</strong> antara Islam dan tradisi megalitik. Nisan menhir tidak sekadar penanda makam, tetapi juga merepresentasikan penghormatan terhadap leluhur sebagaimana dalam tradisi pra-Islam.</p>
+                `
+            },
+            prambanan: {
+                title: "🛕 Candi Prambanan",
+                content: `
+                    <p>Kompleks Candi Prambanan berada di Kabupaten Sleman, Daerah Istimewa Yogyakarta. Prambanan dibangun selama era <strong>Kerajaan Mataram Kuno</strong> (abad ke-8 hingga ke-10). Kompleks ini terdiri dari <strong>240 struktur candi</strong>.</p>
+
+                    <h2>Sejarah Pembangunan</h2>
+                    <p>Pembangunan dimulai pada pemerintahan <strong>Shri Maharaja Rakai Pikatan</strong>, dengan peresmiannya dilakukan pada tahun <strong>778 Saka (856 M)</strong> dalam masa pemerintahan Shri Maharaja Rakai Kayuwangi.</p>
+
+                    <h2>Arsitektur dan Filosofi</h2>
+                    <p>Berdasarkan <strong>Prasasti Siwagraha</strong>, candi ini didedikasikan untuk penyembahan kepada <strong>Trimurti</strong> (Dewa Wisnu, Brahma, dan Siwa). Skema denah mengikuti pola <strong>mandala</strong> yang berpusat, dan direncanakan mengikuti bentuk <strong>Gunung Mahameru</strong>, gunung yang dianggap suci dalam mitologi Hindu.</p>
+
+                    <h2>Kosmologi Hindu</h2>
+                    <p>Setiap elemen dari kompleks Candi Prambanan mengikuti desain yang mencerminkan struktur alam semesta yang terbagi menjadi tiga bagian: lapisan ranah, alam, atau loka.</p>
+                `
+            },
+            brahma: {
+                title: "🔱 Dewa Brahma",
+                content: `
+                    <p>Dewa Brahma dikenal dalam ajaran Hindu sebagai sosok ilahi yang bertugas <strong>menciptakan alam semesta</strong>. Ia merupakan salah satu dari tiga dewa utama dalam konsep <strong>Trimurti</strong>, bersama Dewa Wisnu (pemelihara) dan Dewa Siwa (pelebur).</p>
+
+                    <h2>Ciri-ciri Fisik</h2>
+                    <p>Brahma memiliki karakteristik unik:</p>
+                    <ul>
+                        <li><strong>Empat wajah</strong> yang mengarah ke empat penjuru mata angin - melambangkan keluasan pengetahuan dan penguasaan empat Veda</li>
+                        <li><strong>Empat tangan</strong> membawa:
+                            <ul>
+                                <li>Bunga teratai (penciptaan dan kesucian)</li>
+                                <li>Mala/tasbih (mantra dan waktu)</li>
+                                <li>Kitab suci (pengetahuan)</li>
+                                <li>Mudra Abhaya dan Varada (perlindungan dan berkah)</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <h2>Konsep Filosofis</h2>
+                    <p>Dalam filsafat Hindu, Tuhan dipahami melalui dua pendekatan:</p>
+                    <ul>
+                        <li><strong>Nirguna Brahman:</strong> Tuhan yang tak berwujud</li>
+                        <li><strong>Saguna Brahman:</strong> Tuhan yang berwujud</li>
+                    </ul>
+                    <p>Brahma adalah manifestasi dari Saguna Brahman dalam fungsi penciptaan.</p>
+
+                    <h2>Peran dalam Penciptaan</h2>
+                    <p>Sebagai Dewa Pencipta, Brahma diyakini menciptakan seluruh makhluk hidup melalui kekuatan pikirannya, termasuk para dewa, manusia, dan empat kasta dalam struktur sosial Hindu.</p>
+                `
+            },
+            meganthropus: {
+                title: "🦴 Meganthropus Paleojavanicus",
+                content: `
+                    <p>Meganthropus paleojavanicus merupakan <strong>manusia purba tertua</strong> yang fosilnya ditemukan di Indonesia, tepatnya di Sangiran, Jawa Tengah, sekitar <strong>satu hingga dua juta tahun lalu</strong>.</p>
+
+                    <h2>Sejarah Penemuan</h2>
+                    <p>Fosil ditemukan oleh <strong>G.H.R. von Koenigswald</strong> antara tahun 1937–1941. Nama Meganthropus paleojavanicus berarti "manusia besar dari Jawa yang tua". Fosil yang ditemukan berupa rahang bawah, rahang atas, dan beberapa gigi lepas.</p>
+
+                    <h2>Ciri-ciri Fisik</h2>
+                    <ul>
+                        <li>Tinggi tubuh ±2,5 meter, berpostur besar dan kokoh</li>
+                        <li>Kapasitas otak ±900 cc</li>
+                        <li>Dahi menonjol dan tebal, tulang pipi kuat</li>
+                        <li>Gigi geraham besar dan kuat</li>
+                        <li>Cara berjalan agak membungkuk</li>
+                        <li>Rahang bawah tebal dan kuat, tanpa dagu</li>
+                        <li>Tangan lebih panjang daripada kaki</li>
+                    </ul>
+
+                    <h2>Pola Hidup</h2>
+                    <p>Meganthropus paleojavanicus hidup secara <strong>nomaden</strong>, berpindah tempat sesuai ketersediaan makanan. Pola makan <strong>herbivora</strong> (pemakan tumbuhan, buah, umbi). Di lapisan tanah sezaman ditemukan alat-alat batu sederhana seperti kapak genggam.</p>
+                `
+            },
+            homo: {
+                title: "🚶 Homo Erectus",
+                content: `
+                    <p>Homo erectus merupakan manusia purba yang menempati posisi penting dalam sejarah evolusi manusia. Fosil pertamanya ditemukan oleh <strong>Eugene Dubois</strong> pada tahun <strong>1891</strong> di Trinil, Jawa Timur.</p>
+
+                    <h2>Periode Kehidupan</h2>
+                    <p>Homo erectus hidup sekitar <strong>1,5 juta hingga 300 ribu tahun yang lalu</strong>. Spesies ini menunjukkan kemajuan besar karena telah memiliki kemampuan berpikir, bekerja sama, dan beradaptasi dengan lingkungan.</p>
+
+                    <h2>Ciri-ciri Fisik</h2>
+                    <ul>
+                        <li>Tubuh tegap dan proporsional, tinggi sekitar 160–170 cm</li>
+                        <li>Volume otak sekitar 750–1.200 cc</li>
+                        <li>Dahi miring ke belakang dengan alis tebal dan menonjol</li>
+                        <li>Rahang kuat dan wajah masih menjorok ke depan</li>
+                        <li>Kemampuan berjalan tegak sepenuhnya</li>
+                    </ul>
+
+                    <h2>Kemajuan Budaya</h2>
+                    <p>Homo erectus menunjukkan kemajuan signifikan:</p>
+                    <ul>
+                        <li>Mampu membuat <strong
